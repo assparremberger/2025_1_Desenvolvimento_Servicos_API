@@ -29,5 +29,38 @@ if( isset( $_REQUEST["consultar"] ) ){
 
 
 if( isset( $_REQUEST["inserir"] ) ){
-    
+    $nome = $_POST["name"];
+    $preco = $_POST["price"];
+    try {
+        $conn = mysqli_connect( $local, $user, $senha, $banco );
+        if( $conn ){
+            $sql = "INSERT INTO produto (nome, preco) VALUES 
+                    ( '$nome' , $preco )  ";
+            mysqli_query( $conn , $sql );
+            $id = mysqli_insert_id( $conn );
+            mysqli_close( $conn );
+            echo ' { "id" : '.$id.' }';
+        }else{
+            echo ' { "resposta" : "Erro ao tentar conectar" } ';
+        }
+    } catch (\Throwable $th) {
+        echo ' { "resposta" : "Erro no servidor" } ';
+    }
+}
+
+if( isset( $_REQUEST["deletar"] ) ){
+    $id = $_GET["idProduto"];
+    try {
+        $conn = mysqli_connect( $local, $user, $senha, $banco );
+        if( $conn ){
+            $sql = "DELETE FROM produto WHERE id = $id ";
+            mysqli_query( $conn , $sql );
+            mysqli_close( $conn );
+            echo ' { "resposta" : "Produto excluído com sucesso!" }';
+        }else{
+            echo ' { "resposta" : "Erro ao tentar conectar" } ';
+        }
+    } catch (\Throwable $th) {
+        echo ' { "resposta" : "Erro no servidor" } ';
+    }
 }
