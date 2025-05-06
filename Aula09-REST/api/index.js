@@ -44,6 +44,56 @@ app.get("/product/:idProd" , (req, res, next) => {
         .catch( next )
 } )
 
+app.post( "/product" , (req, res, next) => {
+    conn("produto")
+        .insert( req.body )
+        .then( dados => {
+            if( !dados ){
+                return next( errors(400 , "Erro ao inserir") )
+            }
+            res.status(201).json( {
+                resposta : "Produto inserido" ,
+                id : dados[0]
+            } )
+        })
+        .catch( next )
+} )
+
+app.put( "/product/:idProd" , (req, res, next) => {
+    const id = req.params.idProd
+    conn("produto")
+        .where( "id" , id )
+        .update( req.body )
+        .then( dados => {
+            if( !dados ){
+                return next( errors(404 , "Produto não encontrado") )
+            }
+            res.status(200).json( {
+                resposta : "Produto editado"
+            } )               
+        })
+        .catch( next )
+} )
+
+
+app.delete( "/product/:idProd" , (req, res, next) => {
+    const id = req.params.idProd
+    conn("produto")
+        .where( "id" , id )
+        .delete( )
+        .then( dados => {
+            if( !dados ){
+                return next( errors(404 , "Produto não encontrado") )
+            }
+            res.status(200).json( {
+                resposta : "Produto excluido"
+            } )               
+        })
+        .catch( next )
+} )
+
+
+
 app.listen( PORT , () =>{
     console.log( `Loja executando em: http://localhost:${PORT}` )
 } )
